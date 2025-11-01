@@ -1,5 +1,5 @@
 [package]
-name = "grpcapi"
+name = "grpcapi-client"
 version = "0.1.0"
 edition = "2024"
 
