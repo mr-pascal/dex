@@ -22,12 +22,26 @@ data:
           - source_labels: [__meta_kubernetes_pod_node_name]
             action: replace
             target_label: instance
+      - job_name: "kube-state-metrics"
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            action: keep
+            regex: kube-state-metrics
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: kubernetes_pod_name
       - job_name: "kubernetes-nodes"
         kubernetes_sd_configs:
           - role: node
         scheme: https
         tls_config:
           insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
         relabel_configs:
           - source_labels: [__address__]
             regex: '(.*):10250'
@@ -41,6 +55,7 @@ data:
         scheme: https
         tls_config:
           insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
         metrics_path: /metrics/cadvisor
         relabel_configs:
           - action: labelmap
@@ -148,9 +163,20 @@ rules:
     resources:
       - nodes
       - nodes/metrics
+      - nodes/proxy
       - services
       - endpoints
       - pods
+      - configmaps
+      - secrets
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+      - daemonsets
+      - replicasets
+      - statefulsets
     verbs: ["get", "list", "watch"]
   - apiGroups:
       - extensions
