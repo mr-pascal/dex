@@ -1,7 +1,9 @@
 [workspace]
 resolver = "3"
 members = [
-  "grpcapi", "grpcapi-client",
-  "rapi",
-  "wsapi", "wsapi-client",
+  "apps/grpcapi",
+  "apps/rapi",
+  "apps/wsapi",
+  "grpcapi-client",
+  "wsapi-client",
 ]
