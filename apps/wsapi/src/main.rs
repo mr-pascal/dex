@@ -15,7 +15,6 @@ async fn main() -> Result<(), Error> {
     let try_socket = TcpListener::bind(&addr).await;
     let listener = try_socket.expect("Failed to bind");
     info!("Listening on: {}", addr);
-    println!("Listening on : {}", addr);
 
     while let Ok((stream, _)) = listener.accept().await {
         tokio::spawn(accept_connection(stream));
@@ -35,7 +34,6 @@ async fn accept_connection(stream: TcpStream) {
         .expect("Error during the websocket handshake occurred");
 
     info!("New WebSocket connection: {}", addr);
-    println!("New WebSocket connection: {}", addr);
 
     let (write, read) = ws_stream.split();
     // We should not forward messages other than text or binary.
