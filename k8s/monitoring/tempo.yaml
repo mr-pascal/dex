@@ -51,7 +51,8 @@ spec:
           configMap:
             name: tempo-config
         - name: tempo-storage
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: tempo-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -65,3 +66,15 @@ spec:
     - port: 3200
       targetPort: 3200
       name: http
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tempo-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
