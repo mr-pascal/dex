@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rapi-service
+  namespace: rapi
+  labels:
+    app: rapi
+spec:
+  type: ClusterIP
+  selector:
+    app: rapi
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+      name: http

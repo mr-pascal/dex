@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rapi
+  namespace: rapi
+  labels:
+    app: rapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rapi
+  template:
+    metadata:
+      labels:
+        app: rapi
+    spec:
+      containers:
+        - name: rapi
+          image: dex-registry:32841/rapi:latest # image in your k3d registry
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000 # your app’s exposed port
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+          # readinessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 3000
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          # livenessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 3000
+          #   initialDelaySeconds: 15
+          #   periodSeconds: 20

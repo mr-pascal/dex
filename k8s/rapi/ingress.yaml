@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rapi-ingress
+  namespace: rapi
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: rapi.localhost # use this in /etc/hosts if needed
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rapi-service
+                port:
+                  number: 80
