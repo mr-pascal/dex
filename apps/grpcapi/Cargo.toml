@@ -1,7 +1,6 @@
 [package]
-name = "wsapi"
+name = "grpcapi"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-tokio-tungstenite = "0.28.0"
