@@ -7,6 +7,10 @@ pub mod hello_world {
     tonic::include_proto!("helloworld");
 }
 
+fn get_env(key: &str) -> String {
+    std::env::var(key).unwrap_or_else(|_| panic!("Set the {key} env variable"))
+}
+
 #[derive(Default)]
 pub struct MyGreeter {}
 
@@ -27,7 +31,10 @@ impl Greeter for MyGreeter {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let addr = "[::1]:50051".parse().unwrap();
+    // PORT=50051 cr -p grpcapi
+
+    let port = get_env("PORT");
+    let addr = format!("0.0.0.0:{}", port).parse().unwrap();
     let greeter = MyGreeter::default();
 
     println!("GreeterServer listening on {addr}");

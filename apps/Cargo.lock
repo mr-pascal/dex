@@ -847,7 +847,11 @@ name = "rapi"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "prost",
  "tokio",
+ "tonic",
+ "tonic-prost",
+ "tonic-prost-build",
 ]
 
 [[package]]

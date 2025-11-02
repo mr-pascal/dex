@@ -12,6 +12,6 @@ spec:
     app: rapi
   ports:
     - port: 80
-      targetPort: 3000
+      targetPort: 8080
       protocol: TCP
       name: http

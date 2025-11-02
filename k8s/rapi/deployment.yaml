@@ -20,16 +20,21 @@ spec:
       containers:
         - name: rapi
           image: dex-registry:32841/rapi:latest # image in your k3d registry
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
+          # imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 3000 # your app’s exposed port
+            - containerPort: 8080 # your app’s exposed port
           resources:
             limits:
-              cpu: "500m"
               memory: "128Mi"
             requests:
-              cpu: "100m"
+              cpu: "10m"
               memory: "128Mi"
+          env:
+            - name: PORT
+              value: "8080"
+            - name: GRPC_ADDRESS
+              value: "http://grpcapi.grpcapi.svc.cluster.local:50051"
           # readinessProbe:
           #   httpGet:
           #     path: /health

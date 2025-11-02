@@ -1,0 +1,41 @@
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: grpcapi-ingress
+#   namespace: grpcapi
+#   annotations:
+#     # TODO: TLS IS MISSING
+#     # traefik.ingress.kubernetes.io/router.middlewares: "traefik-v2-autodetect@kubernetescrd"
+#     kubernetes.io/ingress.class: traefik
+#     traefik.ingress.kubernetes.io/service.serversscheme: h2c
+# spec:
+#   tls:
+#     - hosts:
+#         - grpcapi.localhost
+#       secretName: grpcapi-tls
+#   ingressClassName: traefik
+#   rules:
+#     - host: grpcapi.localhost # use this in /etc/hosts if needed
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: grpcapi
+#                 port:
+#                   number: 50051
+# # apiVersion: traefik.containo.us/v1alpha1
+# # kind: IngressRouteTCP
+# # metadata:
+# #   name: grpcapi
+# #   namespace: grpcapi
+# # spec:
+# #   entryPoints:
+# #     - web
+# #   routes:
+# #     - match: HostSNI(`grpcapi.localhost`)
+# #       services:
+# #         - name: grpcapi
+# #           port: 50051
+# #           scheme: h2c

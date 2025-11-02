@@ -40,6 +40,10 @@ curl http://localhost:5000/v2/rapi/tags/list
 docker tag rapi:latest dex-registry.localhost:32841/rapi:latest
 docker push dex-registry.localhost:32841/rapi:latest
 
+docker tag grpcapi:latest dex-registry.localhost:32841/grpcapi:latest
+docker push dex-registry.localhost:32841/grpcapi:latest
+
+
 docker tag myservice:latest localhost:5000/myservice:latest
 docker push localhost:5000/myservice:latest
 

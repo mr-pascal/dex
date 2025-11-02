@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpcapi
+  namespace: grpcapi
+  labels:
+    app: grpcapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: grpcapi
+  template:
+    metadata:
+      labels:
+        app: grpcapi
+      annotations:
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+        - name: grpcapi
+          image: dex-registry:32841/grpcapi:latest # image in your k3d registry
+          imagePullPolicy: Always
+          # imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50051 # your app’s exposed port
+          resources:
+            limits:
+              memory: "128Mi"
+            requests:
+              cpu: "10m"
+              memory: "128Mi"
+          env:
+            - name: PORT
+              value: "50051"
