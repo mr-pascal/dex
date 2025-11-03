@@ -31,17 +31,19 @@ k3d cluster create dex-cluster \
   --port 443:443@loadbalancer \
   --registry-create dex-registry
 
+# k3d cluster create dex-cluster --config k3d-config.yaml
+
 # Check available images in registry
 curl http://localhost:5000/v2/_catalog
 # Check tags
 curl http://localhost:5000/v2/rapi/tags/list
 
 # Tag and push images directly to cluster ("--registry-create")
-docker tag rapi:latest dex-registry.localhost:32841/rapi:latest
-docker push dex-registry.localhost:32841/rapi:latest
+docker tag rapi:latest dex-registry.localhost:5000/rapi:latest
+docker push dex-registry.localhost:5000/rapi:latest
 
-docker tag grpcapi:latest dex-registry.localhost:32841/grpcapi:latest
-docker push dex-registry.localhost:32841/grpcapi:latest
+docker tag grpcapi:latest dex-registry.localhost:5000/grpcapi:latest
+docker push dex-registry.localhost:5000/grpcapi:latest
 
 
 docker tag myservice:latest localhost:5000/myservice:latest

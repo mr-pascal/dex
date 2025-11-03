@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: rapi
-          image: dex-registry:32841/rapi:latest # image in your k3d registry
+          image: dex-registry:5000/rapi:latest # image in your k3d registry
           imagePullPolicy: Always
           # imagePullPolicy: IfNotPresent
           ports:

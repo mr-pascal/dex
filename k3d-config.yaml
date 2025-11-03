@@ -1,0 +1,35 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+servers: 1
+agents: 2
+registries: # define how registries should be created or used
+  create: # creates a default registry to be used with the cluster; same as `--registry-create registry.localhost`
+    name: dex-registry
+    host: "0.0.0.0"
+    hostPort: "5000"
+ports: []
+  # - port: 80:80 # same as `--port '8080:80@loadbalancer'`
+  #   nodeFilters:
+  #     - loadbalancer
+  # - port: 443:443 # same as `--port '443:443@loadbalancer'`
+  #   nodeFilters:
+  #     - loadbalancer
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters:
+          - server:*
+      - arg: --disable=servicelb
+        nodeFilters:
+          - server:*
+      - arg: --disable=metrics-server
+        nodeFilters:
+          - server:*
+      - arg: --disable=local-storage
+        nodeFilters:
+          - server:*
+# - --disable=metrics-server
+# - --disable=local-storage
+# - --disable=coredns
+# - --disable=network-policy
