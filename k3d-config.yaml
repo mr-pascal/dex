@@ -29,6 +29,9 @@ options:
       - arg: --disable=local-storage
         nodeFilters:
           - server:*
+      - arg: --disable=coredns
+        nodeFilters:
+          - server:*
 # - --disable=metrics-server
 # - --disable=local-storage
 # - --disable=coredns

@@ -16,3 +16,13 @@ spec:
                 name: rapi-service
                 port:
                   number: 80
+    - host: rapi.cluster.local # accessible from containers via DNS
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rapi-service
+                port:
+                  number: 80

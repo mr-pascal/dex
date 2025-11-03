@@ -1,0 +1,46 @@
+# CoreDNS Helm values for production-grade setup
+# This file configures CoreDNS to:
+# 1. Expose DNS service as LoadBalancer for external access
+# 2. Resolve *.cluster.local domains to Traefik LoadBalancer IP
+
+isClusterService: true
+
+service:
+  clusterIP: "10.43.0.10"
+  type: LoadBalancer
+  loadBalancerIP: "172.22.255.2"
+
+servers:
+  - zones:
+      - zone: .
+        use_tcp: true
+    port: 53
+    plugins:
+      - name: errors
+      - name: health
+        configBlock: |-
+          lameduck 10s
+      - name: ready
+      # Hosts plugin: Resolve *.cluster.local domains to Traefik LoadBalancer IP
+      # Note: Traefik LoadBalancer must be configured to use IP 172.22.255.1
+      - name: hosts
+        configBlock: |-
+          172.22.255.1 rapi.cluster.local
+          172.22.255.1 grpcapi.cluster.local
+          fallthrough
+      - name: kubernetes
+        parameters: cluster.local in-addr.arpa ip6.arpa
+        configBlock: |-
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+          ttl 30
+      - name: prometheus
+        parameters: 0.0.0.0:9153
+      - name: forward
+        parameters: . /etc/resolv.conf
+      - name: cache
+        parameters: 30
+      - name: loop
+      - name: reload
+      - name: loadbalance
+

@@ -24,14 +24,14 @@ curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
 Set up multi-node cluster:
 
 ```sh
-k3d cluster create dex-cluster \
-  --servers 1 \
-  --agents 2 \
-  --port 80:80@loadbalancer \
-  --port 443:443@loadbalancer \
-  --registry-create dex-registry
+# k3d cluster create dex-cluster \
+#   --servers 1 \
+#   --agents 2 \
+#   --port 80:80@loadbalancer \
+#   --port 443:443@loadbalancer \
+#   --registry-create dex-registry
 
-# k3d cluster create dex-cluster --config k3d-config.yaml
+k3d cluster create dex-cluster --config k3d-config.yaml
 
 # Check available images in registry
 curl http://localhost:5000/v2/_catalog
