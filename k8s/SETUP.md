@@ -22,7 +22,6 @@ k3d cluster create dex-cluster --config ../k3d-config.yaml
 CoreDNS must be installed **before** other services to enable DNS resolution:
 
 ```bash
-cd k8s
 ./bootstrap.sh
 ```
 
@@ -30,7 +29,7 @@ This script:
 
 - Installs CoreDNS via Helm with custom configuration
 - Configures DNS resolution for `*.cluster.local` domains
-- Patches service type to LoadBalancer (required when `isClusterService=true`)
+- Configures service as LoadBalancer type (via `serviceType: LoadBalancer` in values file)
 
 **Note:** The LoadBalancer IP (172.22.255.2) will be automatically assigned once MetalLB is installed via ArgoCD in step 3. The script does not wait for MetalLB to be available.
 
@@ -60,6 +59,21 @@ This applies (in order):
 4. Metrics Server
 5. Traefik (with fixed IP 172.22.255.1)
 6. Applications (rapi, grpcapi)
+
+## TODO
+
+refresh argocd (dunno why, maybe because metallb isn'T there yet?)
+kubectl get applications -n argocd -o name | xargs -I {} kubectl patch {} -n argocd --type merge -p '{"metadata":{"annotations":{"argocd.argoproj.io/refresh":"hard"}}}'
+OR via
+
+```sh
+./refresh-argocd.sh kubectl
+
+kubectl get applications -n argocd
+# --> Wait till metallb is synced and healthy (actually metallb only has to install the CRDs, not completely healthy)
+```
+
+then go `apply.sh` again to install ip pool etc
 
 ## Verification
 
@@ -95,13 +109,7 @@ docker run --rm --network k3d-dex-cluster --dns 172.22.255.2 alpine/curl:8.14.1 
 
 ### CoreDNS service is ClusterIP instead of LoadBalancer
 
-The bootstrap script automatically patches the service, but if it fails:
-
-```bash
-kubectl patch svc coredns -n kube-system \
-  --type='merge' \
-  -p '{"spec":{"type":"LoadBalancer","loadBalancerIP":"172.22.255.2"}}'
-```
+The service type is configured in `coredns-values.yaml` via `serviceType: LoadBalancer`. If it's still ClusterIP, verify the values file and re-run `./bootstrap.sh`.
 
 ### DNS resolution fails
 

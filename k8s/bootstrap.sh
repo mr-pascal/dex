@@ -16,30 +16,31 @@ helm repo add coredns https://coredns.github.io/helm
 helm repo update
 
 # Install or upgrade CoreDNS with Helm values
+# The LoadBalancer service type is configured in coredns-values.yaml via serviceType: LoadBalancer
+# Note: We don't use --wait because the LoadBalancer IP won't be assigned until MetalLB is installed
 if helm list -n kube-system | grep -q "^coredns"; then
   echo "Upgrading existing CoreDNS installation..."
   helm upgrade coredns coredns/coredns \
     -n kube-system \
-    -f "${SCRIPT_DIR}/coredns-values.yaml" \
-    --wait \
-    --timeout 5m
+    -f "${SCRIPT_DIR}/coredns-values.yaml"
 else
   echo "Installing CoreDNS..."
   helm install coredns coredns/coredns \
     -n kube-system \
     --create-namespace \
-    -f "${SCRIPT_DIR}/coredns-values.yaml" \
-    --wait \
-    --timeout 5m
+    -f "${SCRIPT_DIR}/coredns-values.yaml"
 fi
 
-# Note: When isClusterService=true, Helm chart may create ClusterIP service.
-# Patch service to LoadBalancer type for external access (reproducible via this script)
-# The LoadBalancer IP will be assigned automatically once MetalLB is installed via ArgoCD
-kubectl patch svc coredns -n kube-system \
-  --type='merge' \
-  -p '{"spec":{"type":"LoadBalancer","loadBalancerIP":"172.22.255.2"}}'
+# Wait for CoreDNS pods to be ready (but not for LoadBalancer IP)
+echo "Waiting for CoreDNS pods to be ready..."
+kubectl wait --for=condition=ready pod \
+  -l app.kubernetes.io/name=coredns \
+  -n kube-system \
+  --timeout=120s || {
+  echo "⚠ Warning: CoreDNS pods may not be ready yet"
+  echo "  Check status with: kubectl get pods -n kube-system -l app.kubernetes.io/name=coredns"
+}
 
-echo "✓ CoreDNS service patched to LoadBalancer type"
+echo "✓ CoreDNS installed with LoadBalancer service type"
 echo "  LoadBalancer IP (172.22.255.2) will be assigned automatically once MetalLB is installed"
-echo "  Check status with: kubectl get svc -n kube-system coredns"
+echo "  Check service status with: kubectl get svc -n kube-system coredns"

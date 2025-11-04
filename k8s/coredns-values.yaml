@@ -5,9 +5,11 @@
 
 isClusterService: true
 
+# Use top-level serviceType to set LoadBalancer (overrides isClusterService default)
+serviceType: LoadBalancer
+
 service:
   clusterIP: "10.43.0.10"
-  type: LoadBalancer
   loadBalancerIP: "172.22.255.2"
 
 servers:
