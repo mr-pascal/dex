@@ -67,6 +67,7 @@ kubectl get applications -n argocd -o name | xargs -I {} kubectl patch {} -n arg
 OR via
 
 ```sh
+# Wait till the ArgoCD pods are ready before execution!
 ./refresh-argocd.sh kubectl
 
 kubectl get applications -n argocd
